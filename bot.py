@@ -131,8 +131,16 @@ def _handle_shutdown_signal(signum, frame):
 # ---------------------------------------------------------------------------
 # Main loop
 # ---------------------------------------------------------------------------
-def run_bot(config_path: str) -> None:
-    """Run the trading bot until interrupted."""
+def run_bot(config_path: str, force_demo: Optional[bool] = None) -> None:
+    """Run the trading bot until interrupted.
+
+    Parameters
+    ----------
+    config_path : str
+        Path to the YAML config file.
+    force_demo : bool, optional
+        Override demo_mode from config. True = dry-run, False = live.
+    """
     # --- Load config --------------------------------------------------------
     config = load_config(config_path)
     logger = setup_logging(config)
@@ -158,7 +166,7 @@ def run_bot(config_path: str) -> None:
     max_spread = float(risk.get("max_spread_pips", 3.0))
     min_rr = float(risk.get("min_risk_reward", 1.5))
     check_interval = float(bot_cfg.get("check_interval_seconds", 60))
-    demo_mode = bool(bot_cfg.get("demo_mode", True))
+    demo_mode = force_demo if force_demo is not None else bool(bot_cfg.get("demo_mode", True))
     close_on_shutdown = bool(bot_cfg.get("close_on_shutdown", False))
     state_export_interval = float(bot_cfg.get("state_export_interval_seconds", 5))
     magic = int(order_cfg.get("magic", 202401))
@@ -545,10 +553,29 @@ def main():
         default=DEFAULT_CONFIG,
         help=f"Path to YAML config file (default: {DEFAULT_CONFIG})",
     )
+    mode_group = parser.add_mutually_exclusive_group()
+    mode_group.add_argument(
+        "--dry-run",
+        action="store_true",
+        dest="dry_run",
+        help="Force demo mode (no real orders, overrides config.yaml)",
+    )
+    mode_group.add_argument(
+        "--live",
+        action="store_true",
+        dest="live",
+        help="Force live mode (real orders, overrides config.yaml)",
+    )
     args = parser.parse_args()
 
+    force_demo = None
+    if args.dry_run:
+        force_demo = True
+    elif args.live:
+        force_demo = False
+
     try:
-        run_bot(args.config)
+        run_bot(args.config, force_demo=force_demo)
     except FileNotFoundError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         sys.exit(1)
