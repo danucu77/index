@@ -1,0 +1,18 @@
+# Runtime artifacts
+state.json
+state.json.tmp
+logs/
+*.log
+__pycache__/
+*.pyc
+
+# Environment (contains secrets)
+.env
+
+# Screenshots / media
+*.png
+*.jpg
+
+# OS files
+.DS_Store
+Thumbs.db

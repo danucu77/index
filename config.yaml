@@ -1,0 +1,117 @@
+# =============================================================================
+# AlgoTrade MT5 — Trading Bot Configuration
+# =============================================================================
+# This file controls all bot behaviour. Edit carefully.
+# Start with demo_mode: true until you are confident in the strategy.
+
+# --- MetaTrader 5 Connection ---
+mt5:
+  # Path to the MetaTrader 5 terminal executable.
+  # Windows example: "C:/Program Files/MetaTrader 5/terminal64.exe"
+  # Linux/Wine: leave empty to connect to a running instance or set your Wine path.
+  path: ""
+
+  # Account credentials.
+  # For demo accounts: open MT5 → File → Open an Account → choose a demo server.
+  login: 0
+  password: ""
+  server: ""
+
+# --- Trading Symbol ---
+# The instrument to trade (e.g. EURUSD, GBPUSD, XAUUSD, BTCUSD).
+symbol: "EURUSD"
+
+# --- Timeframe ---
+# MT5 timeframe constant. Allowed values:
+#   M1, M2, M3, M4, M5, M6, M10, M12, M15, M20, M30,
+#   H1, H2, H3, H4, H6, H8, H12,
+#   D1, W1, MN1
+timeframe: "M5"
+
+# --- Strategy Parameters (Moving Average Crossover) ---
+strategy:
+  # Fast MA period — reacts quickly to price changes.
+  fast_ma_period: 10
+
+  # Slow MA period — the baseline trend.
+  slow_ma_period: 30
+
+  # Minimum number of bars required to compute signals.
+  # Should be at least slow_ma_period + 5.
+  min_bars: 50
+
+# --- Risk Management ---
+risk:
+  # Fraction of account balance to risk per trade (percent).
+  # Example: 1.0 means the bot risks 1 % of balance on each trade.
+  risk_percent: 1.0
+
+  # Stop-Loss distance as a multiple of ATR(14).
+  # A larger multiple gives the trade more room but increases the loss if hit.
+  sl_atr_multiplier: 1.5
+
+  # Take-Profit distance as a multiple of ATR(14).
+  # A larger multiple targets bigger moves but the trade runs longer.
+  tp_atr_multiplier: 3.0
+
+  # Maximum spread (in pips) allowed to enter a trade.
+  # If current spread exceeds this, the bot skips the signal.
+  max_spread_pips: 3.0
+
+  # Minimum risk:reward ratio required to enter (tp_distance / sl_distance).
+  # Trades with a worse ratio are skipped.
+  min_risk_reward: 1.5
+
+# --- Order Settings ---
+order:
+  # Magic number — uniquely identifies orders placed by this bot.
+  # Change this if you run multiple bots on the same account.
+  magic: 202401
+
+  # Slippage tolerance in pips.
+  slippage: 10
+
+  # Deviation in points (MT5 parameter for slippage).
+  deviation: 20
+
+  # Order comment (visible in MT5 terminal).
+  comment: "AlgoTrade MT5"
+
+# --- Bot Behaviour ---
+bot:
+  # How often the bot checks for new signals (seconds).
+  check_interval_seconds: 60
+
+  # Run in demo mode (true) or live mode (false).
+  # WARNING: Setting this to false will trade REAL money!
+  demo_mode: true
+
+  # Close all positions on shutdown (true = emergency close).
+  close_on_shutdown: false
+
+  # State export interval (seconds) — how often to write state.json for
+  # the web dashboard to read.
+  state_export_interval_seconds: 5
+
+  # Maximum number of recent trades to keep in state.
+  max_recent_trades: 50
+
+  # Maximum number of errors to keep in state.
+  max_errors: 20
+
+# --- Logging ---
+logging:
+  # Log level: DEBUG, INFO, WARNING, ERROR
+  level: "INFO"
+
+  # Log format (Python logging format string).
+  format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+
+  # Log file path (relative to bot/ directory).
+  file: "logs/bot.log"
+
+  # Maximum log file size before rotation (bytes).
+  max_bytes: 10485760
+
+  # Number of rotated log files to keep.
+  backup_count: 5
