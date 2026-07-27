@@ -195,3 +195,7 @@ Then restart the dashboard.
 You have `demo_mode: false` but MT5 isn't connected. Either:
 - Connect MT5 first and verify credentials
 - Set `demo_mode: true` for dry-run testing without MT5
+
+---
+
+*Built with Python 3.10+ and MetaTrader5 API.*
